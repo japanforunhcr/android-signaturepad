@@ -1,9 +1,18 @@
 # jitpack.yml
-# Configures JitPack to build without Maven Central GPG signing keys
+# Uses JDK 17 and injects a Gradle init script that disables all GPG signing tasks
 
 jdk:
   - openjdk17
 
+before_install:
+  - |
+    cat << 'EOF' > /tmp/disable-signing.gradle
+    allprojects {
+      tasks.withType(org.gradle.plugins.signing.Sign).configureEach {
+        enabled = false
+      }
+    }
+    EOF
+
 install:
-  # Runs publishToMavenLocal across all modules while skipping GPG signature generation (.asc files)
-  - ./gradlew publishToMavenLocal -x signMavenPublication
+  - ./gradlew publishToMavenLocal --init-script /tmp/disable-signing.gradle
