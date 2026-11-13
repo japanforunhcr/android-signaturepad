@@ -1,0 +1,9 @@
+# jitpack.yml
+# Configures JitPack to build without Maven Central GPG signing keys
+
+jdk:
+  - openjdk17
+
+install:
+  # Runs publishToMavenLocal across all modules while skipping GPG signature generation (.asc files)
+  - ./gradlew publishToMavenLocal -x signMavenPublication
